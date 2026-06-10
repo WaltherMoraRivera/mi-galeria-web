@@ -463,6 +463,19 @@ const btn = galeria.querySelector(`.tarjeta[data-nombre="${pokemon.nombre}"] .bt
 if (btn) btn.classList.remove("activo");
 ```
 
+### Diseño del chip de favorito
+
+Cada chip muestra tres elementos alineados horizontalmente:
+
+```
+[ imagen ] [ #001        ] [ ✕ ]
+           [ bulbasaur   ]
+```
+
+- La imagen (`36×36px`) queda a la izquierda con `flex-shrink: 0`.
+- A su derecha, un `div.fav-chip-info` con `flex-direction: column` y `justify-content: center` apila el número (`.fav-chip-num`, ámbar claro, 0.68rem) sobre el nombre (`.fav-chip-nombre`, amarillo dorado, 0.82rem), ambos centrados verticalmente respecto a la imagen.
+- El número se formatea con ceros a la izquierda: `#${String(id).padStart(3, "0")}`.
+
 ---
 
 ## 11. Historial de commits
@@ -479,6 +492,8 @@ if (btn) btn.classList.remove("activo");
 | `a990832` | actualiza fondos de pantalla para modo claro y oscuro | Reemplazo de imágenes de fondo |
 | `bbd8364` | corrige URL de GitHub Pages en el README | URL final verificada |
 | `e431e75` | agrega sistema de favoritos | HTML + CSS + JS del sistema de favoritos |
+| `23e2f83` | agrega documentación técnica detallada y actualiza README profesional | DOCUMENTACION.md + README.md |
+| `0e23551` | muestra número e identificador del pokémon en chips de favoritos | Rediseño del chip: imagen + columna #num/nombre |
 
 ---
 
