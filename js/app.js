@@ -2,6 +2,7 @@ const galeria = document.getElementById("galeria");
 const inputBuscar = document.getElementById("buscar");
 const btnCargar = document.getElementById("cargar");
 const btnModo = document.getElementById("modo-oscuro");
+const contador = document.getElementById("contador");
 
 const TOTAL_POKEMON = 151; // Primera generación
 
@@ -18,7 +19,8 @@ btnCargar.addEventListener("click", cargarDatos);
 async function cargarDatos() {
   btnCargar.disabled = true;
   btnCargar.textContent = "Cargando...";
-  galeria.innerHTML = '<p class="mensaje-cargando">Cargando pokémon... ⏳</p>';
+  contador.textContent = "";
+  galeria.innerHTML = '<div class="spinner"><span></span><span></span><span></span></div>';
 
   try {
     // Obtenemos la lista de los primeros 151
@@ -38,6 +40,8 @@ async function cargarDatos() {
       if (!pokemon) return;
       galeria.appendChild(crearTarjeta(pokemon));
     });
+
+    actualizarContador();
 
   } catch (error) {
     galeria.innerHTML = '<p class="mensaje-error">No se pudieron cargar los datos. Revisa tu conexión.</p>';
@@ -94,4 +98,14 @@ inputBuscar.addEventListener("input", () => {
     const nombre = card.dataset.nombre ?? "";
     card.classList.toggle("oculta", !nombre.includes(termino));
   });
+
+  actualizarContador();
 });
+
+function actualizarContador() {
+  const total = galeria.querySelectorAll(".tarjeta").length;
+  const visibles = galeria.querySelectorAll(".tarjeta:not(.oculta)").length;
+  contador.textContent = total > 0
+    ? `Mostrando ${visibles} de ${total} pokémon`
+    : "";
+}
