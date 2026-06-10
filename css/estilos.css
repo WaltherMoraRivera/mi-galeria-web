@@ -22,6 +22,7 @@ body.dark {
   --card-text: #e2e8f0;
   --tipo-bg: #1e3a5f;
   --tipo-text: #93c5fd;
+  background-image: url('../img/Fondo_Web_Oscuro.png');
 }
 
 /* Reset y base */
@@ -29,13 +30,18 @@ body.dark {
 
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: url('../img/Fondo_Web_Claro.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text-light);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   transition: background var(--transition), color var(--transition);
 }
+
 
 a { color: var(--acc); }
 
