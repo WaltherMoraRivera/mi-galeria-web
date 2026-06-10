@@ -138,9 +138,13 @@ function renderizarFavoritos() {
   favoritos.forEach(pokemon => {
     const chip = document.createElement("div");
     chip.className = "fav-chip";
+    const numFormateado = `#${String(pokemon.id).padStart(3, "0")}`;
     chip.innerHTML = `
       ${pokemon.imagen ? `<img src="${pokemon.imagen}" alt="${pokemon.nombre}">` : ""}
-      <span>${pokemon.nombre}</span>
+      <div class="fav-chip-info">
+        <span class="fav-chip-num">${numFormateado}</span>
+        <span class="fav-chip-nombre">${pokemon.nombre}</span>
+      </div>
       <button aria-label="Quitar ${pokemon.nombre} de favoritos" title="Quitar">✕</button>
     `;
     chip.querySelector("button").addEventListener("click", () => {

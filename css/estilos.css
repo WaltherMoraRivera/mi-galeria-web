@@ -199,10 +199,33 @@ input:focus-visible {
 }
 
 .fav-chip img {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.fav-chip-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.1rem;
+}
+
+.fav-chip-num {
+  font-size: 0.68rem;
+  color: #f59e0b;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.fav-chip-nombre {
+  font-size: 0.82rem;
+  color: #fbbf24;
+  font-weight: 600;
+  text-transform: capitalize;
+  line-height: 1;
 }
 
 .fav-chip button {
