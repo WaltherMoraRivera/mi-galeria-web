@@ -177,10 +177,14 @@ input:focus-visible {
 #seccion-favoritos h2 {
   font-size: 1rem;
   font-weight: 700;
-  color: #fbbf24;
+  color: #2563eb;
   margin-bottom: 1rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+}
+
+body.dark #seccion-favoritos h2 {
+  color: #fbbf24;
 }
 
 #favoritos-grid {
@@ -194,15 +198,21 @@ input:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(251, 191, 36, 0.15);
-  border: 1.5px solid #fbbf24;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1.5px solid #2563eb;
   border-radius: 999px;
   padding: 0.3rem 0.75rem 0.3rem 0.4rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #fbbf24;
+  color: #2563eb;
   text-transform: capitalize;
   transition: background var(--transition);
+}
+
+body.dark .fav-chip {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: #fbbf24;
+  color: #fbbf24;
 }
 
 .fav-chip img {
@@ -223,23 +233,31 @@ input:focus-visible {
 
 .fav-chip-num {
   font-size: 0.68rem;
-  color: #f59e0b;
+  color: #1d4ed8;
   font-weight: 700;
   line-height: 1;
 }
 
 .fav-chip-nombre {
   font-size: 0.82rem;
-  color: #fbbf24;
+  color: #2563eb;
   font-weight: 600;
   text-transform: capitalize;
   line-height: 1;
 }
 
+body.dark .fav-chip-num {
+  color: #f59e0b;
+}
+
+body.dark .fav-chip-nombre {
+  color: #fbbf24;
+}
+
 .fav-chip button {
   background: none;
   border: none;
-  color: #fbbf24;
+  color: #2563eb;
   font-size: 0.75rem;
   padding: 0;
   margin-left: 0.25rem;
@@ -247,6 +265,10 @@ input:focus-visible {
   line-height: 1;
   opacity: 0.7;
   transition: opacity var(--transition);
+}
+
+body.dark .fav-chip button {
+  color: #fbbf24;
 }
 
 .fav-chip button:hover { opacity: 1; }
