@@ -157,6 +157,69 @@ input:focus-visible {
   gap: 1.2rem;
 }
 
+/* Sección favoritos */
+#seccion-favoritos {
+  margin-bottom: 2rem;
+  padding: 1.2rem 1.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+#seccion-favoritos h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+#favoritos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Chip de favorito */
+.fav-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1.5px solid #fbbf24;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem 0.3rem 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fbbf24;
+  text-transform: capitalize;
+  transition: background var(--transition);
+}
+
+.fav-chip img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.fav-chip button {
+  background: none;
+  border: none;
+  color: #fbbf24;
+  font-size: 0.75rem;
+  padding: 0;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.fav-chip button:hover { opacity: 1; }
+
 /* Tarjeta */
 .tarjeta {
   background: var(--card);
@@ -177,11 +240,40 @@ input:focus-visible {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
+/* Posición relativa para el botón estrella */
+.tarjeta { position: relative; }
+
 .tarjeta img {
   width: 96px;
   height: 96px;
   object-fit: contain;
   image-rendering: pixelated;
+}
+
+/* Botón estrella */
+.btn-fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 2px;
+  line-height: 1;
+  filter: grayscale(1) opacity(0.45);
+  transition: filter var(--transition), transform 0.15s;
+  transform: scale(1);
+}
+
+.btn-fav:hover {
+  filter: grayscale(0) opacity(1);
+  transform: scale(1.2);
+  background: none;
+}
+
+.btn-fav.activo {
+  filter: grayscale(0) opacity(1);
 }
 
 .tarjeta h3 {

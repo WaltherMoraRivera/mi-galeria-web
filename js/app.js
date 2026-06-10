@@ -3,6 +3,11 @@ const inputBuscar = document.getElementById("buscar");
 const btnCargar = document.getElementById("cargar");
 const btnModo = document.getElementById("modo-oscuro");
 const contador = document.getElementById("contador");
+const seccionFavoritos = document.getElementById("seccion-favoritos");
+const favoritosGrid = document.getElementById("favoritos-grid");
+
+// Mapa en memoria: id -> datos del pokémon
+const favoritos = new Map();
 
 const TOTAL_POKEMON = 151; // Primera generación
 
@@ -78,6 +83,7 @@ function crearTarjeta(pokemon) {
   article.dataset.nombre = nombre;
 
   article.innerHTML = `
+    <button class="btn-fav" aria-label="Agregar ${nombre} a favoritos" title="Favorito">⭐</button>
     ${imagen ? `<img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy">` : ""}
     <span class="numero">#${String(numero).padStart(3, "0")}</span>
     <h3>${nombre}</h3>
@@ -85,6 +91,10 @@ function crearTarjeta(pokemon) {
       ${tipos.map(t => `<span class="tipo">${t}</span>`).join("")}
     </div>
   `;
+
+  article.querySelector(".btn-fav").addEventListener("click", () => {
+    toggleFavorito({ id: numero, nombre, imagen }, article.querySelector(".btn-fav"));
+  });
 
   return article;
 }
@@ -101,6 +111,51 @@ inputBuscar.addEventListener("input", () => {
 
   actualizarContador();
 });
+
+function toggleFavorito(pokemon, btn) {
+  if (favoritos.has(pokemon.id)) {
+    favoritos.delete(pokemon.id);
+    btn.classList.remove("activo");
+    btn.setAttribute("aria-label", `Agregar ${pokemon.nombre} a favoritos`);
+  } else {
+    favoritos.set(pokemon.id, pokemon);
+    btn.classList.add("activo");
+    btn.setAttribute("aria-label", `Quitar ${pokemon.nombre} de favoritos`);
+  }
+  renderizarFavoritos();
+}
+
+function renderizarFavoritos() {
+  favoritosGrid.innerHTML = "";
+
+  if (favoritos.size === 0) {
+    seccionFavoritos.hidden = true;
+    return;
+  }
+
+  seccionFavoritos.hidden = false;
+
+  favoritos.forEach(pokemon => {
+    const chip = document.createElement("div");
+    chip.className = "fav-chip";
+    chip.innerHTML = `
+      ${pokemon.imagen ? `<img src="${pokemon.imagen}" alt="${pokemon.nombre}">` : ""}
+      <span>${pokemon.nombre}</span>
+      <button aria-label="Quitar ${pokemon.nombre} de favoritos" title="Quitar">✕</button>
+    `;
+    chip.querySelector("button").addEventListener("click", () => {
+      favoritos.delete(pokemon.id);
+      // Desactiva la estrella en la tarjeta correspondiente
+      const btn = galeria.querySelector(`.tarjeta[data-nombre="${pokemon.nombre}"] .btn-fav`);
+      if (btn) {
+        btn.classList.remove("activo");
+        btn.setAttribute("aria-label", `Agregar ${pokemon.nombre} a favoritos`);
+      }
+      renderizarFavoritos();
+    });
+    favoritosGrid.appendChild(chip);
+  });
+}
 
 function actualizarContador() {
   const total = galeria.querySelectorAll(".tarjeta").length;
