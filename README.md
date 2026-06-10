@@ -4,7 +4,7 @@ Sitio web dinámico que muestra una galería de los 151 pokémon de la primera g
 
 ## Demo en vivo
 
-🔗 **[Ver sitio publicado](https://walthermorarivers.github.io/mi-galeria-web/)**
+🔗 **[Ver sitio publicado](https://walthermorarivers.github.io/mi-galeria-web)**
 
 ## Qué hace
 
