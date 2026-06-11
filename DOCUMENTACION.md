@@ -1,6 +1,6 @@
 # Documentación Técnica — Pokedex-Z
 
-> **Versión 1.01** — Corrección de legibilidad de textos en modo claro. Ver [PATCH_LOG.md](PATCH_LOG.md).
+> **Versión 1.02** — Corrección de visibilidad de botones de acción rápida en modo claro. Ver [PATCH_LOG.md](PATCH_LOG.md).
 
 **Proyecto:** mi-galeria-web  
 **Curso:** Programación Front End · TI3V31 · Unidad 1  

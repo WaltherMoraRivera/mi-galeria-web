@@ -19,6 +19,17 @@ body:not(.dark) {
   --text-light: #1e3a5f;
 }
 
+/* Modo claro: botones "Seleccionar todo" / "Desmarcar todo" */
+body:not(.dark) .gen-acciones-rapidas button {
+  background: #f8fafc;
+  color: #1e3a5f;
+  border: 1px solid #1e3a5f;
+}
+
+body:not(.dark) .gen-acciones-rapidas button:hover {
+  background: #ffffff;
+}
+
 /* Modo oscuro activado por clase en <body> */
 body.dark {
   --card: #1e293b;

@@ -1,6 +1,6 @@
 # Pokedex-Z
 
-> **Versión 1.01** — Corrección de legibilidad de textos en modo claro.
+> **Versión 1.02** — Corrección de visibilidad de botones de acción rápida en modo claro.
 
 Sitio web dinámico que muestra una galería interactiva de los **1.025 pokémon** de las nueve generaciones, desarrollado como desafío práctico del curso **Programación Front End · TI3V31 · Unidad 1**.
 
