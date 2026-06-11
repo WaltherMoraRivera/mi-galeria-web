@@ -1,4 +1,6 @@
-# Documentación Técnica — Galería Pokémon
+# Documentación Técnica — Pokedex-Z
+
+> **Versión 1.0** — Primera versión estable y completa. Fecha de cierre: 2026-06-10.
 
 **Proyecto:** mi-galeria-web  
 **Curso:** Programación Front End · TI3V31 · Unidad 1  
@@ -32,7 +34,7 @@
 
 ## 1. Descripción general
 
-**Galería Pokémon** es un sitio web estático y dinámico desarrollado como desafío práctico del curso de Programación Front End (TI3V31, Unidad 1). El objetivo fue construir, desde cero y sin frameworks, una aplicación web que:
+**Pokedex-Z** es un sitio web estático y dinámico desarrollado como desafío práctico del curso de Programación Front End (TI3V31, Unidad 1). El objetivo fue construir, desde cero y sin frameworks, una aplicación web que:
 
 - Consuma una API pública REST en tiempo real.
 - Muestre los datos obtenidos en un layout de tarjetas responsivo.
@@ -111,7 +113,7 @@ mi-galeria-web/
 <body class="dark">
   <header class="site-header">
     <img class="header-icon" src="img/Icono_Web.png">
-    <h1>Galería Pokémon</h1>
+    <h1>Pokedex-Z</h1>
     <label for="buscar">Buscar</label>
     <input id="buscar" type="text">
     <button id="modo-oscuro">☀️ Modo claro</button>
@@ -378,7 +380,7 @@ Se agregó `Icono_Web.png` a la carpeta `img/` con dos usos:
 <link rel="icon" type="image/png" href="img/Icono_Web.png">
 
 <!-- Miniatura 50×50px al inicio del header -->
-<img src="img/Icono_Web.png" class="header-icon" alt="Icono Galería Pokémon">
+<img src="img/Icono_Web.png" class="header-icon" alt="Icono Pokedex-Z">
 ```
 
 ```css
@@ -537,6 +539,7 @@ Los tipos con fondo claro (Electric, Normal, Ground, Ice, Bug, Steel) usan texto
 | `c3f535c` | agrega botones Seleccionar todo y Desmarcar todo | Selector de carga con acciones rápidas |
 | `ca5f59b` | corrige orden de secciones y reemplaza dropdown por filtro multi-selección | Fix encabezados + panel checkboxes filtro |
 | `9871a53` | aplica colores oficiales por tipo de pokémon | Mapa TIPO_COLORES con contraste automático |
+| *(v1.0)* | renombra proyecto a Pokedex-Z y marca versión 1.0 | Nombre final del proyecto, cierre de desarrollo |
 
 ---
 

@@ -1,4 +1,6 @@
-# Galería Pokémon
+# Pokedex-Z
+
+> **Versión 1.0** — Primera versión estable y completa.
 
 Sitio web dinámico que muestra una galería interactiva de los **1.025 pokémon** de las nueve generaciones, desarrollado como desafío práctico del curso **Programación Front End · TI3V31 · Unidad 1**.
 
