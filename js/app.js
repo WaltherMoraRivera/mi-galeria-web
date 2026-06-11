@@ -10,6 +10,28 @@ const filtroChecks   = document.getElementById("filtro-checks");
 
 const favoritos = new Map();
 
+// Colores oficiales por tipo (fuente: Pokémon series)
+const TIPO_COLORES = {
+  normal:   { bg: "#A8A77A", texto: "#1a1a1a" },
+  fire:     { bg: "#EE8130", texto: "#fff"     },
+  water:    { bg: "#6390F0", texto: "#fff"     },
+  electric: { bg: "#F7D02C", texto: "#1a1a1a" },
+  grass:    { bg: "#7AC74C", texto: "#fff"     },
+  ice:      { bg: "#96D9D6", texto: "#1a1a1a" },
+  fighting: { bg: "#C22E28", texto: "#fff"     },
+  poison:   { bg: "#A33EA1", texto: "#fff"     },
+  ground:   { bg: "#E2BF65", texto: "#1a1a1a" },
+  flying:   { bg: "#A98FF3", texto: "#fff"     },
+  psychic:  { bg: "#F95587", texto: "#fff"     },
+  bug:      { bg: "#A6B91A", texto: "#1a1a1a" },
+  rock:     { bg: "#B6A136", texto: "#fff"     },
+  ghost:    { bg: "#735797", texto: "#fff"     },
+  dragon:   { bg: "#6F35FC", texto: "#fff"     },
+  dark:     { bg: "#705746", texto: "#fff"     },
+  steel:    { bg: "#B7B7CE", texto: "#1a1a1a" },
+  fairy:    { bg: "#D685AD", texto: "#fff"     },
+};
+
 const GENERACIONES = {
   1: { inicio: 1,   fin: 151,  label: "Generación I"   },
   2: { inicio: 152, fin: 251,  label: "Generación II"  },
@@ -156,7 +178,10 @@ function crearTarjeta(pokemon, gen) {
     ${imagen ? `<img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy">` : ""}
     <span class="numero">#${String(numero).padStart(3, "0")}</span>
     <h3>${nombre}</h3>
-    <div class="tipos">${tipos.map(t => `<span class="tipo">${t}</span>`).join("")}</div>
+    <div class="tipos">${tipos.map(t => {
+      const color = TIPO_COLORES[t] ?? { bg: "#777", texto: "#fff" };
+      return `<span class="tipo" style="background:${color.bg};color:${color.texto}">${t}</span>`;
+    }).join("")}</div>
   `;
 
   article.querySelector(".btn-fav").addEventListener("click", () =>

@@ -6,8 +6,6 @@
   --card-text: #1a2438;
   --acc: #2563eb;
   --acc-hover: #1d4ed8;
-  --tipo-bg: #e0e7ff;
-  --tipo-text: #3730a3;
   --header-bg: #0a0f1e;
   --footer-bg: #0a0f1e;
   --text-light: #cbd5e1;
@@ -20,8 +18,6 @@
 body.dark {
   --card: #1e293b;
   --card-text: #e2e8f0;
-  --tipo-bg: #1e3a5f;
-  --tipo-text: #93c5fd;
   background-image: url('../img/Fondo_Web_Oscuro.png');
 }
 
@@ -493,14 +489,11 @@ body.dark .fav-chip button {
 }
 
 .tipo {
-  background: var(--tipo-bg);
-  color: var(--tipo-text);
   font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
   text-transform: capitalize;
-  transition: background var(--transition), color var(--transition);
 }
 
 /* Animación de entrada para tarjetas */
