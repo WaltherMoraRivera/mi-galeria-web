@@ -24,6 +24,16 @@ const GENERACIONES = {
   9: { inicio: 906, fin: 1025, label: "Generación IX"  },
 };
 
+const checkboxesGen = () => Object.keys(GENERACIONES).map(n => document.getElementById(`chk-gen${n}`));
+
+document.getElementById("sel-todo").addEventListener("click", () => {
+  checkboxesGen().forEach(chk => { if (chk) chk.checked = true; });
+});
+
+document.getElementById("desel-todo").addEventListener("click", () => {
+  checkboxesGen().forEach(chk => { if (chk) chk.checked = false; });
+});
+
 // --- Modo oscuro ---
 btnModo.addEventListener("click", () => {
   document.body.classList.toggle("dark");
