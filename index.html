@@ -21,7 +21,7 @@
   </header>
 
   <main>
-    <!-- Selector de generaciones -->
+    <!-- Selector de carga -->
     <div class="selector-gen">
       <span class="selector-gen-label">Generaciones:</span>
       <div class="gen-checks">
@@ -42,12 +42,16 @@
       <button id="cargar">Cargar Pokémon</button>
     </div>
 
-    <!-- Filtro dropdown (visible tras cargar) -->
+    <!-- Panel de filtro multi-selección (visible tras cargar) -->
     <div id="filtros-gen" hidden>
-      <label for="select-gen" class="filtro-label">Filtrar por:</label>
-      <select id="select-gen">
-        <option value="todas">Todas las generaciones</option>
-      </select>
+      <div class="filtro-panel">
+        <span class="selector-gen-label">Filtrar por:</span>
+        <div id="filtro-checks" class="gen-checks"></div>
+        <div class="gen-acciones-rapidas">
+          <button id="filtro-sel-todo" type="button">Seleccionar todo</button>
+          <button id="filtro-desel-todo" type="button">Desmarcar todo</button>
+        </div>
+      </div>
     </div>
 
     <!-- Favoritos -->
@@ -58,7 +62,7 @@
 
     <p id="contador"></p>
 
-    <!-- Galería -->
+    <!-- Galería: cada generación vive en su propio contenedor -->
     <div id="galeria" aria-label="Galería de pokémon">
       <p class="mensaje-inicio">Selecciona una o más generaciones y haz clic en "Cargar Pokémon".</p>
     </div>

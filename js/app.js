@@ -1,17 +1,15 @@
-const galeria       = document.getElementById("galeria");
-const inputBuscar   = document.getElementById("buscar");
-const btnCargar     = document.getElementById("cargar");
-const btnModo       = document.getElementById("modo-oscuro");
-const contador      = document.getElementById("contador");
-const seccionFavs   = document.getElementById("seccion-favoritos");
-const favoritosGrid = document.getElementById("favoritos-grid");
-const filtrosGen    = document.getElementById("filtros-gen");
-const selectGen     = document.getElementById("select-gen");
+const galeria        = document.getElementById("galeria");
+const inputBuscar    = document.getElementById("buscar");
+const btnCargar      = document.getElementById("cargar");
+const btnModo        = document.getElementById("modo-oscuro");
+const contador       = document.getElementById("contador");
+const seccionFavs    = document.getElementById("seccion-favoritos");
+const favoritosGrid  = document.getElementById("favoritos-grid");
+const filtrosGen     = document.getElementById("filtros-gen");
+const filtroChecks   = document.getElementById("filtro-checks");
 
-// Mapa en memoria: id -> datos del pokémon
 const favoritos = new Map();
 
-// Todas las generaciones disponibles
 const GENERACIONES = {
   1: { inicio: 1,   fin: 151,  label: "Generación I"   },
   2: { inicio: 152, fin: 251,  label: "Generación II"  },
@@ -24,22 +22,20 @@ const GENERACIONES = {
   9: { inicio: 906, fin: 1025, label: "Generación IX"  },
 };
 
-const checkboxesGen = () => Object.keys(GENERACIONES).map(n => document.getElementById(`chk-gen${n}`));
-
-document.getElementById("sel-todo").addEventListener("click", () => {
-  checkboxesGen().forEach(chk => { if (chk) chk.checked = true; });
-});
-
-document.getElementById("desel-todo").addEventListener("click", () => {
-  checkboxesGen().forEach(chk => { if (chk) chk.checked = false; });
-});
-
 // --- Modo oscuro ---
 btnModo.addEventListener("click", () => {
   document.body.classList.toggle("dark");
-  const activo = document.body.classList.contains("dark");
-  btnModo.textContent = activo ? "☀️ Modo claro" : "🌙 Modo oscuro";
+  btnModo.textContent = document.body.classList.contains("dark") ? "☀️ Modo claro" : "🌙 Modo oscuro";
 });
+
+// --- Seleccionar / Desmarcar todo (selector de carga) ---
+const checkboxesCarga = () => Object.keys(GENERACIONES).map(n => document.getElementById(`chk-gen${n}`));
+
+document.getElementById("sel-todo").addEventListener("click", () =>
+  checkboxesCarga().forEach(c => { if (c) c.checked = true; }));
+
+document.getElementById("desel-todo").addEventListener("click", () =>
+  checkboxesCarga().forEach(c => { if (c) c.checked = false; }));
 
 // --- Cargar Pokémon ---
 btnCargar.addEventListener("click", cargarDatos);
@@ -60,10 +56,39 @@ async function cargarDatos() {
   filtrosGen.hidden = true;
   galeria.innerHTML = "";
 
-  // Carga progresiva: cada generación se muestra al llegar sin esperar a las demás
-  await Promise.all(seleccion.map(numGen => cargarGeneracion(numGen)));
+  // Crear los contenedores de sección ANTES de la carga async
+  // para garantizar el orden visual correcto
+  seleccion.forEach(numGen => {
+    const seccion = document.createElement("div");
+    seccion.className = "gen-seccion";
+    seccion.dataset.gen = numGen;
+    seccion.id = `gen-seccion-${numGen}`;
 
-  actualizarDropdown(seleccion);
+    const heading = document.createElement("h2");
+    heading.className = "gen-heading";
+    heading.dataset.gen = numGen;
+    heading.id = `gen-heading-${numGen}`;
+
+    const spinnerInline = document.createElement("span");
+    spinnerInline.className = "spinner-inline";
+    spinnerInline.innerHTML = "<span></span><span></span><span></span>";
+
+    heading.textContent = GENERACIONES[numGen].label + " ";
+    heading.appendChild(spinnerInline);
+
+    const grid = document.createElement("div");
+    grid.className = "gen-seccion-grid";
+    grid.id = `gen-grid-${numGen}`;
+
+    seccion.appendChild(heading);
+    seccion.appendChild(grid);
+    galeria.appendChild(seccion);
+  });
+
+  // Cargar todas las generaciones en paralelo; cada una rellena su contenedor
+  await Promise.all(seleccion.map(n => cargarGeneracion(n)));
+
+  construirFiltroPanel(seleccion);
   filtrosGen.hidden = false;
   actualizarContador();
 
@@ -75,43 +100,29 @@ async function cargarGeneracion(numGen) {
   const gen      = GENERACIONES[numGen];
   const cantidad = gen.fin - gen.inicio + 1;
   const offset   = gen.inicio - 1;
-
-  // Encabezado + spinner de sección mientras carga
-  const heading = document.createElement("h2");
-  heading.className = "gen-heading";
-  heading.dataset.gen = numGen;
-  heading.textContent = `${gen.label}  `;
-
-  const spinnerInline = document.createElement("span");
-  spinnerInline.className = "spinner-inline";
-  spinnerInline.innerHTML = "<span></span><span></span><span></span>";
-  heading.appendChild(spinnerInline);
-  galeria.appendChild(heading);
+  const grid     = document.getElementById(`gen-grid-${numGen}`);
+  const heading  = document.getElementById(`gen-heading-${numGen}`);
 
   try {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${cantidad}&offset=${offset}`);
     if (!res.ok) throw new Error(`Error Gen ${numGen}: ${res.status}`);
 
-    const data     = await res.json();
-    const promesas = data.results.map(p => fetchPokemon(p.url));
+    const data      = await res.json();
+    const promesas  = data.results.map(p => fetchPokemon(p.url));
     const pokemones = await Promise.all(promesas);
 
-    // Quitar spinner del heading
-    spinnerInline.remove();
+    heading.querySelector(".spinner-inline")?.remove();
 
-    // Fragmento para inserción eficiente
     const fragment = document.createDocumentFragment();
     pokemones.forEach(pokemon => {
       if (!pokemon) return;
       fragment.appendChild(crearTarjeta(pokemon, numGen));
     });
-    galeria.appendChild(fragment);
+    grid.appendChild(fragment);
 
   } catch (error) {
-    spinnerInline.remove();
-    heading.insertAdjacentHTML("afterend",
-      `<p class="mensaje-error" style="grid-column:1/-1">Error cargando ${gen.label}. Intenta de nuevo.</p>`
-    );
+    heading.querySelector(".spinner-inline")?.remove();
+    grid.innerHTML = `<p class="mensaje-error">Error cargando ${gen.label}. Intenta de nuevo.</p>`;
     console.error(error);
   }
 }
@@ -131,11 +142,9 @@ function crearTarjeta(pokemon, gen) {
   const numero = pokemon.id ?? "?";
   const imagen =
     pokemon.sprites?.other?.["official-artwork"]?.front_default ??
-    pokemon.sprites?.front_default ??
-    "";
+    pokemon.sprites?.front_default ?? "";
   const tipos = Array.isArray(pokemon.types)
-    ? pokemon.types.map(t => t.type?.name).filter(Boolean)
-    : [];
+    ? pokemon.types.map(t => t.type?.name).filter(Boolean) : [];
 
   const article = document.createElement("article");
   article.className = "tarjeta";
@@ -147,48 +156,65 @@ function crearTarjeta(pokemon, gen) {
     ${imagen ? `<img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy">` : ""}
     <span class="numero">#${String(numero).padStart(3, "0")}</span>
     <h3>${nombre}</h3>
-    <div class="tipos">
-      ${tipos.map(t => `<span class="tipo">${t}</span>`).join("")}
-    </div>
+    <div class="tipos">${tipos.map(t => `<span class="tipo">${t}</span>`).join("")}</div>
   `;
 
-  article.querySelector(".btn-fav").addEventListener("click", () => {
-    toggleFavorito({ id: numero, nombre, imagen }, article.querySelector(".btn-fav"));
-  });
+  article.querySelector(".btn-fav").addEventListener("click", () =>
+    toggleFavorito({ id: numero, nombre, imagen }, article.querySelector(".btn-fav")));
 
   return article;
 }
 
-// --- Dropdown de generaciones ---
-function actualizarDropdown(seleccion) {
-  // Reconstruir opciones: Todas + cada gen cargada
-  selectGen.innerHTML = '<option value="todas">Todas las generaciones</option>';
+// --- Panel de filtro multi-selección ---
+function construirFiltroPanel(seleccion) {
+  filtroChecks.innerHTML = "";
+
   seleccion.forEach(n => {
-    const opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = GENERACIONES[n].label;
-    selectGen.appendChild(opt);
+    const label = document.createElement("label");
+    label.className = "gen-opcion";
+    label.innerHTML = `<input type="checkbox" data-filtro-gen="${n}" checked>
+      <span>${GENERACIONES[n].label}</span>`;
+    filtroChecks.appendChild(label);
   });
-  selectGen.value = "todas";
+
+  aplicarFiltroGen();
 }
 
-selectGen.addEventListener("change", () => {
-  const valor = selectGen.value;
+// Seleccionar / Desmarcar todo en el panel de filtro
+document.getElementById("filtro-sel-todo").addEventListener("click", () => {
+  filtroChecks.querySelectorAll("input[data-filtro-gen]")
+    .forEach(c => { c.checked = true; });
+  aplicarFiltroGen();
+  actualizarContador();
+});
 
-  galeria.querySelectorAll(".tarjeta").forEach(card => {
-    const visible = valor === "todas" || card.dataset.gen === valor;
-    card.classList.toggle("oculta-gen", !visible);
-  });
+document.getElementById("filtro-desel-todo").addEventListener("click", () => {
+  filtroChecks.querySelectorAll("input[data-filtro-gen]")
+    .forEach(c => { c.checked = false; });
+  aplicarFiltroGen();
+  actualizarContador();
+});
 
-  galeria.querySelectorAll(".gen-heading").forEach(h => {
-    h.style.display = (valor === "todas" || h.dataset.gen === valor) ? "" : "none";
-  });
-
+filtroChecks.addEventListener("change", () => {
+  aplicarFiltroGen();
   aplicarBuscador();
   actualizarContador();
 });
 
-// --- Buscador en vivo ---
+function aplicarFiltroGen() {
+  const activas = new Set(
+    [...filtroChecks.querySelectorAll("input[data-filtro-gen]:checked")]
+      .map(c => c.dataset.filtroGen)
+  );
+
+  galeria.querySelectorAll(".gen-seccion").forEach(sec => {
+    sec.classList.toggle("oculta-gen", !activas.has(sec.dataset.gen));
+  });
+
+  aplicarBuscador();
+}
+
+// --- Buscador ---
 inputBuscar.addEventListener("input", () => {
   aplicarBuscador();
   actualizarContador();
@@ -198,7 +224,8 @@ function aplicarBuscador() {
   const termino = inputBuscar.value.toLowerCase().trim();
   galeria.querySelectorAll(".tarjeta").forEach(card => {
     const nombre    = card.dataset.nombre ?? "";
-    const ocultaGen = card.classList.contains("oculta-gen");
+    const seccion   = card.closest(".gen-seccion");
+    const ocultaGen = seccion?.classList.contains("oculta-gen") ?? false;
     card.classList.toggle("oculta", ocultaGen || !nombre.includes(termino));
   });
 }
@@ -220,11 +247,7 @@ function toggleFavorito(pokemon, btn) {
 function renderizarFavoritos() {
   favoritosGrid.innerHTML = "";
 
-  if (favoritos.size === 0) {
-    seccionFavs.hidden = true;
-    return;
-  }
-
+  if (favoritos.size === 0) { seccionFavs.hidden = true; return; }
   seccionFavs.hidden = false;
 
   favoritos.forEach(pokemon => {
@@ -255,7 +278,5 @@ function renderizarFavoritos() {
 function actualizarContador() {
   const total    = galeria.querySelectorAll(".tarjeta").length;
   const visibles = galeria.querySelectorAll(".tarjeta:not(.oculta)").length;
-  contador.textContent = total > 0
-    ? `Mostrando ${visibles} de ${total} pokémon`
-    : "";
+  contador.textContent = total > 0 ? `Mostrando ${visibles} de ${total} pokémon` : "";
 }
