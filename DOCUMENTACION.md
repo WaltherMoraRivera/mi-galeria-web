@@ -539,7 +539,7 @@ Los tipos con fondo claro (Electric, Normal, Ground, Ice, Bug, Steel) usan texto
 | `c3f535c` | agrega botones Seleccionar todo y Desmarcar todo | Selector de carga con acciones rápidas |
 | `ca5f59b` | corrige orden de secciones y reemplaza dropdown por filtro multi-selección | Fix encabezados + panel checkboxes filtro |
 | `9871a53` | aplica colores oficiales por tipo de pokémon | Mapa TIPO_COLORES con contraste automático |
-| *(v1.0)* | renombra proyecto a Pokedex-Z y marca versión 1.0 | Nombre final del proyecto, cierre de desarrollo |
+| `fd38a17` | renombra proyecto a Pokedex-Z y marca versión 1.0 | Nombre final del proyecto, cierre de desarrollo |
 
 ---
 
