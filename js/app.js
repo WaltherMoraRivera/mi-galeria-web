@@ -83,7 +83,7 @@ function crearTarjeta(pokemon) {
   article.dataset.nombre = nombre;
 
   article.innerHTML = `
-    <button class="btn-fav" aria-label="Agregar ${nombre} a favoritos" title="Favorito">⭐</button>
+    <button class="btn-fav" aria-label="Agregar ${nombre} a favoritos" title="Añadir a Favoritos">⭐</button>
     ${imagen ? `<img src="${imagen}" alt="Imagen de ${nombre}" loading="lazy">` : ""}
     <span class="numero">#${String(numero).padStart(3, "0")}</span>
     <h3>${nombre}</h3>
