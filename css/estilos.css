@@ -109,6 +109,95 @@ main {
   width: 100%;
 }
 
+/* Selector de generaciones */
+.selector-gen {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+  padding: 0.9rem 1.2rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(4px);
+}
+
+.selector-gen-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 0.25rem;
+}
+
+.gen-opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  user-select: none;
+}
+
+.gen-opcion input[type="checkbox"] {
+  accent-color: var(--acc);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.gen-opcion em {
+  font-style: normal;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* Filtros por generación */
+#filtros-gen {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.filtro-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  transform: none;
+}
+
+.filtro-btn.activo {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: #fff;
+}
+
+/* Encabezado de sección de generación */
+.gen-heading {
+  grid-column: 1 / -1;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--acc);
+  padding: 0.5rem 0 0.25rem;
+  border-bottom: 2px solid var(--acc);
+  margin-bottom: 0.25rem;
+}
+
 .acciones {
   margin-bottom: 1.5rem;
   display: flex;
@@ -366,8 +455,9 @@ body.dark .fav-chip button {
 
 .tarjeta { animation: aparecer 0.3s ease both; }
 
-/* Tarjeta oculta por filtro */
-.tarjeta.oculta { display: none; }
+/* Tarjeta oculta por buscador o filtro de generación */
+.tarjeta.oculta,
+.tarjeta.oculta-gen { display: none; }
 
 /* Spinner de carga */
 .spinner {
