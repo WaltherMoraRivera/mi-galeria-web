@@ -20,9 +20,13 @@
 8. [Bonus — Buscador en vivo y modo oscuro](#8-bonus--buscador-en-vivo-y-modo-oscuro)
 9. [Mejora — Fondos de pantalla personalizados](#9-mejora--fondos-de-pantalla-personalizados)
 10. [Mejora — Sistema de favoritos](#10-mejora--sistema-de-favoritos)
-11. [Historial de commits](#11-historial-de-commits)
-12. [Tecnologías utilizadas](#12-tecnologías-utilizadas)
-13. [Guía de actualización](#13-guía-de-actualización)
+11. [Mejora — Favicon e icono de cabecera](#11-mejora--favicon-e-icono-de-cabecera)
+12. [Mejora — Modo oscuro por defecto](#12-mejora--modo-oscuro-por-defecto)
+13. [Mejora — Soporte para todas las generaciones (Gen I–IX)](#13-mejora--soporte-para-todas-las-generaciones-gen-iix)
+14. [Mejora — Colores oficiales por tipo](#14-mejora--colores-oficiales-por-tipo)
+15. [Historial de commits](#15-historial-de-commits)
+16. [Tecnologías utilizadas](#16-tecnologías-utilizadas)
+17. [Guía de actualización](#17-guía-de-actualización)
 
 ---
 
@@ -35,7 +39,7 @@
 - Sea accesible, semántica y visualmente cuidada.
 - Esté versionada con Git y publicada en internet.
 
-El tema elegido fue la **PokéAPI** (`pokeapi.co`), mostrando los 151 pokémon de la primera generación con su imagen oficial, número de pokédex, nombre y tipos.
+El tema elegido fue la **PokéAPI** (`pokeapi.co`), mostrando hasta los **1.025 pokémon** de las nueve generaciones, con imagen oficial, número de pokédex, nombre y tipos con colores oficiales.
 
 ---
 
@@ -43,17 +47,18 @@ El tema elegido fue la **PokéAPI** (`pokeapi.co`), mostrando los 151 pokémon d
 
 ```
 mi-galeria-web/
-├── index.html          # Estructura HTML5 semántica y accesible
+├── index.html              # Estructura HTML5 semántica y accesible
 ├── css/
-│   └── estilos.css     # Estilos, layout, modo oscuro y animaciones
+│   └── estilos.css         # Estilos, layout, modo oscuro y animaciones
 ├── js/
-│   └── app.js          # Lógica: Fetch, DOM, favoritos, buscador
+│   └── app.js              # Lógica: Fetch, DOM, generaciones, favoritos, buscador
 ├── img/
-│   ├── Fondo_Web_Claro.png   # Fondo para modo claro
-│   └── Fondo_Web_Oscuro.png  # Fondo para modo oscuro
-├── .gitignore          # Exclusiones de Git
-├── README.md           # Resumen público del proyecto
-└── DOCUMENTACION.md    # Este archivo — documentación técnica detallada
+│   ├── Fondo_Web_Claro.png # Fondo para modo claro
+│   ├── Fondo_Web_Oscuro.png# Fondo para modo oscuro
+│   └── Icono_Web.png       # Favicon e icono del header
+├── .gitignore              # Exclusiones de Git
+├── README.md               # Resumen público del proyecto
+└── DOCUMENTACION.md        # Este archivo — documentación técnica detallada
 ```
 
 ---
@@ -79,12 +84,7 @@ mi-galeria-web/
    - Archivos de sistema operativo (`.DS_Store`, `Thumbs.db`, `desktop.ini`)
    - Configuraciones de editor (`.vscode/`, `.idea/`)
    - Directorios de dependencias (`node_modules/`)
-5. Se realizó el primer commit y push a `main`:
-   ```bash
-   git add .
-   git commit -m "estructura inicial del proyecto"
-   git push origin main
-   ```
+5. Se realizó el primer commit y push a `main`.
 
 ### Criterios cumplidos
 - Repositorio público en GitHub con clon local funcional.
@@ -103,50 +103,55 @@ mi-galeria-web/
 - El campo de búsqueda fue asociado explícitamente a su `<label>` mediante los atributos `for` e `id`, cumpliendo con las pautas WCAG de accesibilidad.
 - Se incluyó `<html lang="es">` para indicar el idioma del documento a los lectores de pantalla.
 - El atributo `<meta name="viewport">` garantiza el comportamiento responsivo en dispositivos móviles.
-- Las tarjetas se inyectan dinámicamente dentro de `<section id="galeria">`, manteniendo la separación entre estructura y lógica.
+- Las tarjetas se inyectan dinámicamente dentro de contenedores por generación, manteniendo la separación entre estructura y lógica.
 
-### Estructura HTML resultante
+### Estructura HTML actual
 
 ```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Galería Pokémon</title>
-  <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body>
-  <header class="site-header">         <!-- Cabecera con título y controles -->
+<body class="dark">
+  <header class="site-header">
+    <img class="header-icon" src="img/Icono_Web.png">
     <h1>Galería Pokémon</h1>
     <label for="buscar">Buscar</label>
-    <input id="buscar" type="text" placeholder="Filtrar por nombre...">
-    <button id="modo-oscuro">🌙 Modo oscuro</button>
+    <input id="buscar" type="text">
+    <button id="modo-oscuro">☀️ Modo claro</button>
   </header>
-
   <main>
-    <section id="seccion-favoritos">   <!-- Favoritos fijos (oculto por defecto) -->
-      <h2>Favoritos</h2>
-      <div id="favoritos-grid"></div>
-    </section>
-
-    <button id="cargar">Cargar Pokémon</button>
+    <div class="selector-gen">          <!-- Selector de generaciones a cargar -->
+      <div class="gen-checks">...</div> <!-- 9 checkboxes Gen I–IX -->
+      <div class="gen-acciones-rapidas">
+        <button id="sel-todo">Seleccionar todo</button>
+        <button id="desel-todo">Desmarcar todo</button>
+      </div>
+      <button id="cargar">Cargar Pokémon</button>
+    </div>
+    <div id="filtros-gen">             <!-- Panel filtro multi-selección -->
+      <div class="filtro-panel">
+        <div id="filtro-checks">...</div>
+        <button id="filtro-sel-todo">Seleccionar todo</button>
+        <button id="filtro-desel-todo">Desmarcar todo</button>
+      </div>
+    </div>
+    <section id="seccion-favoritos">   <!-- Chips de favoritos (oculto por defecto) -->
     <p id="contador"></p>
-    <section id="galeria">             <!-- Tarjetas inyectadas por JS -->
-    </section>
+    <div id="galeria">                 <!-- Secciones por generación inyectadas por JS -->
+      <div class="gen-seccion" data-gen="1">
+        <h2 class="gen-heading">Generación I</h2>
+        <div class="gen-seccion-grid"><!-- tarjetas --></div>
+      </div>
+      ...
+    </div>
   </main>
-
   <footer>...</footer>
-  <script src="js/app.js"></script>    <!-- JS al final del body -->
+  <script src="js/app.js"></script>
 </body>
-</html>
 ```
 
 ### Criterios cumplidos
 - Etiquetas semánticas en todas las zonas (`header`, `main`, `section`, `footer`).
 - Un único `<h1>` con jerarquía lógica de encabezados.
 - `<label>` asociado al input de búsqueda con `for`/`id`.
-- Contenedor `<section id="galeria">` listo para recibir tarjetas dinámicas.
+- Contenedores por generación listos para recibir tarjetas dinámicas.
 
 ---
 
@@ -156,54 +161,52 @@ mi-galeria-web/
 
 ### Sistema de variables CSS
 
-Se definió una paleta completa con custom properties en `:root`, permitiendo cambiar el tema del sitio modificando un solo bloque:
+Se definió una paleta completa con custom properties en `:root`:
 
 ```css
 :root {
   --bg: #0f1724;
-  --surface: #1a2438;
   --card: #ffffff;
   --card-text: #1a2438;
   --acc: #2563eb;
   --acc-hover: #1d4ed8;
-  --tipo-bg: #e0e7ff;
-  --tipo-text: #3730a3;
   --shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   --radius: 14px;
   --transition: 0.25s ease;
 }
 ```
 
-El modo oscuro redefine únicamente las variables que cambian, sin duplicar reglas:
+El modo oscuro redefine únicamente las variables que cambian:
 
 ```css
 body.dark {
   --card: #1e293b;
   --card-text: #e2e8f0;
-  --tipo-bg: #1e3a5f;
-  --tipo-text: #93c5fd;
+  background-image: url('../img/Fondo_Web_Oscuro.png');
 }
 ```
 
-### Layout con CSS Grid
+### Layout con CSS Grid por sección
 
-La galería usa `grid` con `auto-fill` y `minmax`, lo que permite columnas fluidas sin necesidad de media queries para el número de columnas:
+Cada generación vive en un `.gen-seccion` (flex columna). Dentro, `.gen-seccion-grid` tiene el grid de tarjetas:
 
 ```css
-#galeria {
+#galeria { display: flex; flex-direction: column; gap: 2rem; }
+
+.gen-seccion-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1.2rem;
 }
 ```
 
-En móvil (`max-width: 600px`) se fuerza a 2 columnas; en pantallas muy pequeñas (`max-width: 380px`) a 1 columna.
+Este diseño resuelve el problema de encabezados apilados que ocurría con un grid plano único cuando las generaciones cargaban en paralelo.
 
 ### Accesibilidad visual
 
 - Contraste de texto revisado para cumplir nivel AA de WCAG.
-- Todos los elementos interactivos tienen un estado `:focus-visible` con contorno de 3px en el color de acento.
-- Los estados `:hover` en tarjetas y botones incluyen transiciones suaves para no desorientar al usuario.
+- Todos los elementos interactivos tienen `:focus-visible` con contorno de 3px en el color de acento.
+- Transiciones suaves en hover de tarjetas y botones.
 
 ### Criterios cumplidos
 - Grid responsivo con columna única en móvil.
@@ -217,67 +220,50 @@ En móvil (`max-width: 600px`) se fuerza a 2 columnas; en pantallas muy pequeña
 
 **Puntos:** 30 | **Objetivo:** Consumir la PokéAPI y renderizar los datos en tarjetas, con manejo de errores.
 
-### Estrategia de consumo
+### Estrategia de carga progresiva por generación
 
-Se optó por una estrategia en dos pasos para minimizar las llamadas secuenciales:
-
-1. **Primera llamada:** obtiene la lista de los primeros 151 pokémon (nombre y URL individual de cada uno).
-2. **Llamadas paralelas:** con `Promise.all()` se lanza la petición de detalle de cada pokémon en paralelo, reduciendo el tiempo total de carga significativamente.
+Se usa `Promise.all` para lanzar todas las generaciones seleccionadas en paralelo. Cada generación crea su contenedor en el DOM de forma síncrona (garantizando el orden visual) y lo rellena al recibir los datos:
 
 ```js
-const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=151`);
-const data = await res.json();
-const promesas = data.results.map(p => fetchPokemon(p.url));
-const pokemones = await Promise.all(promesas);
+// 1. Crear todos los contenedores en orden ANTES de los fetch
+seleccion.forEach(numGen => {
+  const seccion = document.createElement("div");
+  seccion.className = "gen-seccion";
+  galeria.appendChild(seccion); // orden garantizado
+});
+
+// 2. Cargar en paralelo — cada gen rellena su propio contenedor
+await Promise.all(seleccion.map(n => cargarGeneracion(n)));
 ```
 
-### Manejo de errores
-
-Se implementaron dos niveles de manejo de errores:
-
-- **Nivel global:** `try/catch` en `cargarDatos()` captura fallos de red o respuestas inválidas y muestra un mensaje al usuario.
-- **Nivel individual:** `fetchPokemon()` tiene su propio `try/catch` y retorna `null` si una petición individual falla, evitando que un solo pokémon rompa toda la galería.
+Cada generación usa `limit` y `offset` para pedir exactamente su rango:
 
 ```js
-async function fetchPokemon(url) {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
+const res = await fetch(
+  `https://pokeapi.co/api/v2/pokemon?limit=${cantidad}&offset=${offset}`
+);
 ```
+
+### Manejo de errores en dos niveles
+
+- **Por generación:** `cargarGeneracion()` tiene `try/catch` propio — si falla una generación, las demás no se ven afectadas.
+- **Por pokémon individual:** `fetchPokemon()` retorna `null` en caso de fallo sin romper la galería.
 
 ### Validación de datos
-
-Antes de renderizar cada tarjeta se validan los campos con el operador de encadenamiento opcional (`?.`) y valores por defecto con `??`, evitando errores en tiempo de ejecución si la API devuelve campos inesperados:
 
 ```js
 const imagen =
   pokemon.sprites?.other?.["official-artwork"]?.front_default ??
-  pokemon.sprites?.front_default ??
-  "";
+  pokemon.sprites?.front_default ?? "";
 const tipos = Array.isArray(pokemon.types)
-  ? pokemon.types.map(t => t.type?.name).filter(Boolean)
-  : [];
+  ? pokemon.types.map(t => t.type?.name).filter(Boolean) : [];
 ```
-
-### Estructura de cada tarjeta
-
-Cada pokémon se renderiza como un `<article class="tarjeta">` con:
-- Imagen oficial de alta resolución (con `loading="lazy"` para rendimiento)
-- Número de pokédex formateado con ceros a la izquierda (`#001`)
-- Nombre en minúsculas capitalizado con CSS (`text-transform: capitalize`)
-- Tipos como `<span class="tipo">` con color de fondo propio
 
 ### Criterios cumplidos
 - Datos reales obtenidos de la PokéAPI con `fetch` y `async/await`.
 - `try/catch` en dos niveles y verificación de `response.ok`.
-- Mensaje de error visible al usuario si la API falla.
+- Mensaje de error por sección si la API falla.
 - Validación de campos antes de renderizar.
-- Sin errores en consola del navegador.
 
 ---
 
@@ -291,47 +277,24 @@ Se creó la rama `feature/mejoras-ui` para desarrollar las mejoras de interfaz d
 
 ```bash
 git checkout -b feature/mejoras-ui
-# ... desarrollo ...
 git push origin feature/mejoras-ui
 git checkout main
 git merge feature/mejoras-ui
 git push origin main
 ```
 
-Las mejoras desarrolladas en esta rama fueron:
-- Animación de entrada (`@keyframes aparecer`) para las tarjetas al cargar.
-- Spinner de carga animado con tres puntos pulsantes mientras se espera la respuesta de la API.
-- Contador dinámico que muestra cuántos pokémon están visibles respecto al total.
-
 ### Publicación en GitHub Pages
 
-El sitio se publicó activando GitHub Pages desde:
 `Settings → Pages → Branch: main → Folder: / (root)`
 
-URL pública resultante: **https://walthermorarivera.github.io/mi-galeria-web/**
+URL pública: **https://walthermorarivera.github.io/mi-galeria-web/**
 
 ### Publicación adicional en Render
 
-El sitio también fue desplegado en Render como Static Site, configurado con:
-- **Branch:** `main`
-- **Build Command:** *(vacío, no requiere compilación)*
-- **Publish Directory:** `.`
-
-Render redespliega automáticamente con cada `git push` a `main`.
-
-### Historial de commits al cierre del reto
-
-```
-083ca63  corrige URL de GitHub Pages en el README
-674ec42  documenta el proyecto en README con descripción, tecnologías y estructura
-2fc12aa  agrega contador de resultados visibles y conecta spinner al estado de carga
-edf0550  agrega animación de entrada y spinner de carga a las tarjetas
-53eb4a4  estructura inicial del proyecto
-bf5b016  Initial commit
-```
+Static Site configurado con branch `main`, sin build command, publish directory `.`. Redespliega automáticamente con cada `git push` a `main`.
 
 ### Criterios cumplidos
-- 6 commits con mensajes descriptivos en imperativo.
+- Historial de commits con mensajes descriptivos en imperativo.
 - Rama `feature/mejoras-ui` creada, trabajada y fusionada a `main`.
 - Sitio publicado y accesible desde su URL pública.
 - README con descripción del proyecto y enlace al sitio.
@@ -340,145 +303,215 @@ bf5b016  Initial commit
 
 ## 8. Bonus — Buscador en vivo y modo oscuro
 
-**Puntos:** +10 | **Objetivo:** Funcionalidades adicionales para mejorar la experiencia de usuario.
+**Puntos:** +10
 
 ### Buscador en vivo
 
-El buscador filtra las tarjetas en el DOM sin hacer nuevas llamadas a la API. Escucha el evento `input` en tiempo real y aplica/retira la clase `oculta` (que hace `display: none`) a cada tarjeta según si su nombre incluye el texto ingresado:
+Filtra tarjetas en el DOM sin nuevas llamadas a la API. Coordina con el filtro de generación activo para no mostrar tarjetas de generaciones ocultas:
 
 ```js
-inputBuscar.addEventListener("input", () => {
+function aplicarBuscador() {
   const termino = inputBuscar.value.toLowerCase().trim();
   galeria.querySelectorAll(".tarjeta").forEach(card => {
-    card.classList.toggle("oculta", !card.dataset.nombre.includes(termino));
+    const ocultaGen = card.closest(".gen-seccion")?.classList.contains("oculta-gen");
+    card.classList.toggle("oculta", ocultaGen || !card.dataset.nombre.includes(termino));
   });
-  actualizarContador();
-});
+}
 ```
-
-El atributo `data-nombre` en cada tarjeta almacena el nombre del pokémon en minúsculas para que la comparación sea case-insensitive sin manipulación extra.
 
 ### Modo oscuro
 
-El toggle de modo oscuro añade/retira la clase `dark` del `<body>`. Todas las transiciones de color son automáticas gracias a las variables CSS definidas en `:root` y sobreescritas en `body.dark`. También cambia el fondo de pantalla (ver sección 9):
-
-```js
-btnModo.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const activo = document.body.classList.contains("dark");
-  btnModo.textContent = activo ? "☀️ Modo claro" : "🌙 Modo oscuro";
-});
-```
+Toggle que añade/retira la clase `dark` del `<body>`. El modo oscuro es el **estado por defecto** (`<body class="dark">`). El botón muestra "☀️ Modo claro" al iniciar y cambia a "🌙 Modo oscuro" al activar el modo claro.
 
 ---
 
 ## 9. Mejora — Fondos de pantalla personalizados
 
-**Objetivo:** Aplicar imágenes de fondo temáticas que cambien según el modo activo.
-
-Se creó la carpeta `img/` en la raíz del proyecto para alojar los assets visuales. Las imágenes se aplican mediante `background-image` en el `body`, con `background-size: cover` y `background-attachment: fixed` para efecto parallax al hacer scroll:
+Se aplican mediante `background-image` en el `body`, con `background-size: cover` y `background-attachment: fixed`:
 
 ```css
-body {
-  background-image: url('../img/Fondo_Web_Claro.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-}
-
-body.dark {
-  background-image: url('../img/Fondo_Web_Oscuro.png');
-}
+body        { background-image: url('../img/Fondo_Web_Claro.png'); }
+body.dark   { background-image: url('../img/Fondo_Web_Oscuro.png'); }
 ```
 
 | Archivo | Modo | Descripción |
 |---|---|---|
-| `Fondo_Web_Claro.png` | Claro | Fondo con estética Pokéball en tonos rosas/blancos |
-| `Fondo_Web_Oscuro.png` | Oscuro | Fondo con estética HUD/circuitos en tonos rojo/negro |
-
-El cambio de fondo es instantáneo al activar el toggle de modo oscuro, sin parpadeo, gracias a que la transición de `background` está definida en la propiedad `transition` del `body`.
+| `Fondo_Web_Claro.png` | Claro | Estética Pokéball en tonos rosas/blancos |
+| `Fondo_Web_Oscuro.png` | Oscuro | Estética HUD/circuitos en tonos rojo/negro |
 
 ---
 
 ## 10. Mejora — Sistema de favoritos
 
-**Objetivo:** Permitir marcar tarjetas como favoritas y mostrarlas de forma destacada en la parte superior de la página durante la sesión.
-
 ### Almacenamiento en memoria
-
-Los favoritos se almacenan en un `Map` de JavaScript con el `id` del pokémon como clave y sus datos como valor. El `Map` preserva el orden de inserción y permite operaciones O(1) de búsqueda, inserción y eliminación:
 
 ```js
 const favoritos = new Map(); // id (número) -> { id, nombre, imagen }
 ```
 
-Al recargar la página el `Map` se reinicia, cumpliendo el requisito de persistencia solo durante la sesión.
+Persiste durante la sesión. Al recargar la página se reinicia.
 
-### Botón estrella en las tarjetas
+### Botón estrella
 
-Cada tarjeta incluye un botón `⭐` posicionado en la esquina superior derecha con `position: absolute` (la tarjeta tiene `position: relative`). El estado visual se controla con la clase `activo`:
+Posicionado con `position: absolute` en la esquina superior derecha de cada tarjeta. Tooltip: "Añadir a Favoritos". Al activarse muestra el color dorado completo; inactivo aparece en gris con opacidad reducida.
 
-```css
-.btn-fav {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  filter: grayscale(1) opacity(0.45); /* inactivo */
-}
-
-.btn-fav.activo {
-  filter: grayscale(0) opacity(1);    /* activo — estrella dorada */
-}
-```
-
-### Función `toggleFavorito`
-
-Gestiona el estado de cada favorito y mantiene sincronizados el botón de la tarjeta y el chip en la sección superior:
-
-```js
-function toggleFavorito(pokemon, btn) {
-  if (favoritos.has(pokemon.id)) {
-    favoritos.delete(pokemon.id);
-    btn.classList.remove("activo");
-  } else {
-    favoritos.set(pokemon.id, pokemon);
-    btn.classList.add("activo");
-  }
-  renderizarFavoritos();
-}
-```
-
-### Sección de favoritos
-
-La `<section id="seccion-favoritos">` está oculta por defecto (`hidden`). Aparece automáticamente cuando hay al menos un favorito y desaparece cuando la lista queda vacía. Cada favorito se muestra como un chip con la imagen miniatura del pokémon, su nombre y un botón `✕` para quitarlo:
+### Chip de favorito
 
 ```
-[ 🖼 bulbasaur ✕ ]  [ 🖼 charmander ✕ ]  [ 🖼 pikachu ✕ ]
+[ 🖼 imagen ]  [ #001       ]  [ ✕ ]
+               [ bulbasaur  ]
 ```
 
-Al quitar un favorito desde el chip, la estrella de la tarjeta correspondiente en la galería se desactiva automáticamente mediante una búsqueda por `data-nombre`:
-
-```js
-const btn = galeria.querySelector(`.tarjeta[data-nombre="${pokemon.nombre}"] .btn-fav`);
-if (btn) btn.classList.remove("activo");
-```
-
-### Diseño del chip de favorito
-
-Cada chip muestra tres elementos alineados horizontalmente:
-
-```
-[ imagen ] [ #001        ] [ ✕ ]
-           [ bulbasaur   ]
-```
-
-- La imagen (`36×36px`) queda a la izquierda con `flex-shrink: 0`.
-- A su derecha, un `div.fav-chip-info` con `flex-direction: column` y `justify-content: center` apila el número (`.fav-chip-num`, ámbar claro, 0.68rem) sobre el nombre (`.fav-chip-nombre`, amarillo dorado, 0.82rem), ambos centrados verticalmente respecto a la imagen.
-- El número se formatea con ceros a la izquierda: `#${String(id).padStart(3, "0")}`.
+- Imagen `36×36px` a la izquierda.
+- `div.fav-chip-info` con dos líneas centradas: número (`.fav-chip-num`) encima, nombre (`.fav-chip-nombre`) abajo.
+- Colores: **modo oscuro** → dorado (`#fbbf24`/`#f59e0b`); **modo claro** → azul (`#2563eb`/`#1d4ed8`).
+- Botón `✕` para quitar el favorito, que también desactiva la estrella en la tarjeta correspondiente.
 
 ---
 
-## 11. Historial de commits
+## 11. Mejora — Favicon e icono de cabecera
+
+Se agregó `Icono_Web.png` a la carpeta `img/` con dos usos:
+
+```html
+<!-- Favicon en la pestaña del navegador -->
+<link rel="icon" type="image/png" href="img/Icono_Web.png">
+
+<!-- Miniatura 50×50px al inicio del header -->
+<img src="img/Icono_Web.png" class="header-icon" alt="Icono Galería Pokémon">
+```
+
+```css
+.header-icon { width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; }
+```
+
+---
+
+## 12. Mejora — Modo oscuro por defecto
+
+El `<body>` arranca con la clase `dark` aplicada directamente en el HTML:
+
+```html
+<body class="dark">
+```
+
+El botón de toggle muestra "☀️ Modo claro" desde el inicio. Al hacer clic alterna entre ambos modos y actualiza el texto del botón:
+
+```js
+btnModo.textContent = document.body.classList.contains("dark") ? "☀️ Modo claro" : "🌙 Modo oscuro";
+```
+
+---
+
+## 13. Mejora — Soporte para todas las generaciones (Gen I–IX)
+
+### Cobertura
+
+| Gen | Rango | Pokémon |
+|---|---|---|
+| I   | #001–#151  | 151 |
+| II  | #152–#251  | 100 |
+| III | #252–#386  | 135 |
+| IV  | #387–#493  | 107 |
+| V   | #494–#649  | 156 |
+| VI  | #650–#721  | 72  |
+| VII | #722–#809  | 88  |
+| VIII| #810–#905  | 96  |
+| IX  | #906–#1025 | 120 |
+| **Total** | | **1.025** |
+
+### Selector de carga
+
+9 checkboxes organizados en grilla flexible, con dos botones de acción rápida:
+
+```html
+<div class="gen-checks"><!-- 9 checkboxes --></div>
+<div class="gen-acciones-rapidas">
+  <button id="sel-todo">Seleccionar todo</button>
+  <button id="desel-todo">Desmarcar todo</button>
+</div>
+```
+
+```js
+document.getElementById("sel-todo").addEventListener("click", () =>
+  checkboxesCarga().forEach(c => { if (c) c.checked = true; }));
+```
+
+### Carga progresiva con orden garantizado
+
+El problema de los encabezados apilados se resolvió separando la creación del contenedor (síncrona, en orden) de la carga de datos (asíncrona, en paralelo):
+
+```js
+// Paso 1 — contenedores en orden (síncrono)
+seleccion.forEach(n => {
+  const seccion = crearContenedorSeccion(n);
+  galeria.appendChild(seccion);
+});
+
+// Paso 2 — carga paralela (asíncrono), cada gen rellena su contenedor
+await Promise.all(seleccion.map(n => cargarGeneracion(n)));
+```
+
+Mientras una generación carga, su encabezado muestra un spinner de tres puntos pulsantes que desaparece al completarse.
+
+### Filtro multi-selección
+
+Reemplaza el dropdown original. Se construye dinámicamente tras la carga con un checkbox por cada generación cargada, más botones "Seleccionar todo" y "Desmarcar todo":
+
+```js
+function construirFiltroPanel(seleccion) {
+  seleccion.forEach(n => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" data-filtro-gen="${n}" checked>
+      <span>${GENERACIONES[n].label}</span>`;
+    filtroChecks.appendChild(label);
+  });
+}
+```
+
+El filtro coordina con el buscador: al cambiar la selección de generaciones, el buscador se reaplica automáticamente sobre el subconjunto visible.
+
+---
+
+## 14. Mejora — Colores oficiales por tipo
+
+Cada badge de tipo usa el color oficial de la franquicia Pokémon, definido en un mapa en `app.js`:
+
+```js
+const TIPO_COLORES = {
+  normal:   { bg: "#A8A77A", texto: "#1a1a1a" },
+  fire:     { bg: "#EE8130", texto: "#fff"     },
+  water:    { bg: "#6390F0", texto: "#fff"     },
+  electric: { bg: "#F7D02C", texto: "#1a1a1a" },
+  grass:    { bg: "#7AC74C", texto: "#fff"     },
+  ice:      { bg: "#96D9D6", texto: "#1a1a1a" },
+  fighting: { bg: "#C22E28", texto: "#fff"     },
+  poison:   { bg: "#A33EA1", texto: "#fff"     },
+  ground:   { bg: "#E2BF65", texto: "#1a1a1a" },
+  flying:   { bg: "#A98FF3", texto: "#fff"     },
+  psychic:  { bg: "#F95587", texto: "#fff"     },
+  bug:      { bg: "#A6B91A", texto: "#1a1a1a" },
+  rock:     { bg: "#B6A136", texto: "#fff"     },
+  ghost:    { bg: "#735797", texto: "#fff"     },
+  dragon:   { bg: "#6F35FC", texto: "#fff"     },
+  dark:     { bg: "#705746", texto: "#fff"     },
+  steel:    { bg: "#B7B7CE", texto: "#1a1a1a" },
+  fairy:    { bg: "#D685AD", texto: "#fff"     },
+};
+```
+
+Los colores se aplican como `style` inline al crear cada `<span class="tipo">`:
+
+```js
+const color = TIPO_COLORES[t] ?? { bg: "#777", texto: "#fff" };
+return `<span class="tipo" style="background:${color.bg};color:${color.texto}">${t}</span>`;
+```
+
+Los tipos con fondo claro (Electric, Normal, Ground, Ice, Bug, Steel) usan texto oscuro (`#1a1a1a`) para garantizar contraste suficiente. Los colores son independientes del modo claro/oscuro, respetando el estándar visual de la franquicia.
+
+---
+
+## 15. Historial de commits
 
 | Hash | Mensaje | Descripción |
 |---|---|---|
@@ -487,24 +520,34 @@ Cada chip muestra tres elementos alineados horizontalmente:
 | `edf0550` | agrega animación de entrada y spinner de carga | CSS: keyframes y spinner |
 | `2fc12aa` | agrega contador de resultados visibles | JS + HTML: contador dinámico |
 | `674ec42` | documenta el proyecto en README | README completo con tabla de tecnologías |
-| `083ca63` | corrige URL de GitHub Pages en el README | URL correcta del sitio |
+| `083ca63` | actualiza README con enlace a GitHub Pages | URL correcta del sitio |
 | `d34f238` | agrega fondos personalizados para modo claro y oscuro | Carpeta img/ + CSS background |
 | `a990832` | actualiza fondos de pantalla para modo claro y oscuro | Reemplazo de imágenes de fondo |
 | `bbd8364` | corrige URL de GitHub Pages en el README | URL final verificada |
 | `e431e75` | agrega sistema de favoritos | HTML + CSS + JS del sistema de favoritos |
-| `23e2f83` | agrega documentación técnica detallada y actualiza README profesional | DOCUMENTACION.md + README.md |
-| `0e23551` | muestra número e identificador del pokémon en chips de favoritos | Rediseño del chip: imagen + columna #num/nombre |
+| `23e2f83` | agrega documentación técnica detallada y actualiza README | DOCUMENTACION.md + README.md |
+| `0e23551` | muestra número e identificador en chips de favoritos | Rediseño del chip: imagen + columna #num/nombre |
+| `ec4d47b` | actualiza documentación con rediseño del chip | DOCUMENTACION.md actualizado |
+| `90bdef5` | centra número identificador en chips de favoritos | align-items: center en .fav-chip-info |
+| `2a97e36` | agrega favicon e icono 50x50 en el header | img/Icono_Web.png + link rel=icon |
+| `794fdce` | cambia colores de favoritos a azul en modo claro | Colores modo claro: azul; modo oscuro: dorado |
+| `440f782` | establece modo oscuro como default y actualiza tooltip | body class="dark" + "Añadir a Favoritos" |
+| `2c58feb` | agrega Generación II con selector y secciones separadas | Selector Gen I/II + secciones + filtros |
+| `024b77a` | agrega Gen III–IX con carga progresiva y filtro dropdown | 9 generaciones + spinner inline + dropdown |
+| `c3f535c` | agrega botones Seleccionar todo y Desmarcar todo | Selector de carga con acciones rápidas |
+| `ca5f59b` | corrige orden de secciones y reemplaza dropdown por filtro multi-selección | Fix encabezados + panel checkboxes filtro |
+| `9871a53` | aplica colores oficiales por tipo de pokémon | Mapa TIPO_COLORES con contraste automático |
 
 ---
 
-## 12. Tecnologías utilizadas
+## 16. Tecnologías utilizadas
 
 | Tecnología | Versión / Estándar | Uso en el proyecto |
 |---|---|---|
 | HTML5 | Living Standard | Estructura semántica y accesible |
 | CSS3 | Living Standard | Layout, variables, animaciones, responsive |
-| JavaScript | ES2022 (ES13) | Fetch API, DOM, async/await, Map, `?.` |
-| PokéAPI | v2 | Fuente de datos de pokémon |
+| JavaScript | ES2022 (ES13) | Fetch API, DOM, async/await, Promise.all, Map, `?.` |
+| PokéAPI | v2 | Fuente de datos Gen I–IX (1.025 pokémon) |
 | Git | 2.x | Control de versiones local |
 | GitHub | — | Repositorio remoto y colaboración |
 | GitHub Pages | — | Hosting estático gratuito |
@@ -512,9 +555,7 @@ Cada chip muestra tres elementos alineados horizontalmente:
 
 ---
 
-## 13. Guía de actualización
-
-Esta sección describe el proceso que se debe seguir al realizar cualquier nueva mejora o corrección al proyecto, para mantener la documentación siempre sincronizada con el código.
+## 17. Guía de actualización
 
 ### Al agregar una nueva funcionalidad
 
@@ -524,10 +565,11 @@ Esta sección describe el proceso que se debe seguir al realizar cualquier nueva
    ```
 2. Desarrollar y hacer commits atómicos con mensajes claros en imperativo.
 3. Actualizar **este archivo** (`DOCUMENTACION.md`):
-   - Agregar una nueva sección numerada bajo "Mejora — Nombre de la funcionalidad".
+   - Agregar una nueva sección numerada al final de la lista de mejoras.
    - Documentar: objetivo, decisiones técnicas, fragmentos de código clave y resultado.
-   - Agregar la entrada correspondiente en la tabla del [Historial de commits](#11-historial-de-commits).
-4. Actualizar `README.md` si cambia algún dato del resumen público (URL, descripción, tecnologías).
+   - Agregar la entrada en la tabla del [Historial de commits](#15-historial-de-commits).
+   - Actualizar la Tabla de contenidos con el nuevo número de sección.
+4. Actualizar `README.md`: tabla de funcionalidades, estructura del proyecto si cambió, descripción general si aplica.
 5. Hacer merge a `main` y push:
    ```bash
    git checkout main
@@ -538,16 +580,17 @@ Esta sección describe el proceso que se debe seguir al realizar cualquier nueva
 ### Al corregir un bug
 
 1. Trabajar directamente en `main` si el fix es trivial, o en una rama `fix/descripcion` si requiere más de un commit.
-2. Actualizar la tabla del historial de commits en `DOCUMENTACION.md`.
-3. Si el bug afectaba alguna funcionalidad documentada, corregir la sección correspondiente.
+2. Agregar la entrada en el historial de commits en `DOCUMENTACION.md`.
+3. Si el bug afectaba una funcionalidad documentada, corregir la sección correspondiente.
 
 ### Convención de mensajes de commit
 
 ```
-<verbo en imperativo> <qué> [<dónde/contexto>]
+<verbo en imperativo> <qué> [<contexto opcional>]
 
 Ejemplos:
   agrega filtro por tipo a la galería
   corrige desbordamiento de imagen en tarjetas móvil
   actualiza URL del sitio en README y DOCUMENTACION
+  aplica colores oficiales por tipo de pokémon
 ```
