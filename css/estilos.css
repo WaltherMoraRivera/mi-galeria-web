@@ -112,11 +112,11 @@ main {
 /* Selector de generaciones */
 .selector-gen {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.9rem;
   margin-bottom: 1.2rem;
-  padding: 0.9rem 1.2rem;
+  padding: 1rem 1.2rem;
   background: rgba(0, 0, 0, 0.2);
   border-radius: var(--radius);
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -129,7 +129,15 @@ main {
   color: var(--text-light);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-right: 0.25rem;
+  padding-top: 0.15rem;
+  white-space: nowrap;
+}
+
+.gen-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  flex: 1;
 }
 
 .gen-opcion {
@@ -137,53 +145,84 @@ main {
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-light);
   user-select: none;
+  white-space: nowrap;
 }
 
 .gen-opcion input[type="checkbox"] {
   accent-color: var(--acc);
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .gen-opcion em {
   font-style: normal;
-  font-size: 0.75rem;
-  opacity: 0.6;
+  font-size: 0.72rem;
+  opacity: 0.55;
+  margin-left: 0.1rem;
 }
 
-/* Filtros por generación */
+/* Filtro dropdown */
 #filtros-gen {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.6rem;
   margin-bottom: 1.2rem;
-  flex-wrap: wrap;
 }
 
-.filtro-btn {
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--text-light);
+.filtro-label {
   font-size: 0.85rem;
-  font-weight: 600;
-  border: 1.5px solid transparent;
-  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-.filtro-btn:hover {
-  background: rgba(255, 255, 255, 0.13);
-  transform: none;
-}
-
-.filtro-btn.activo {
-  background: var(--acc);
-  border-color: var(--acc);
+#select-gen {
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  border: 1.5px solid #334155;
+  background: #1e293b;
   color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--transition);
 }
+
+#select-gen:focus-visible {
+  outline: 3px solid var(--acc);
+  outline-offset: 2px;
+}
+
+body:not(.dark) #select-gen {
+  background: #fff;
+  color: #1a2438;
+  border-color: #cbd5e1;
+}
+
+/* Spinner inline dentro del encabezado de generación */
+.spinner-inline {
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.spinner-inline span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--acc);
+  animation: pulsar 0.9s ease-in-out infinite;
+}
+
+.spinner-inline span:nth-child(2) { animation-delay: 0.15s; }
+.spinner-inline span:nth-child(3) { animation-delay: 0.3s; }
 
 /* Encabezado de sección de generación */
 .gen-heading {
