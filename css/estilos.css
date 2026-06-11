@@ -14,6 +14,11 @@
   --transition: 0.25s ease;
 }
 
+/* Modo claro: sobreescribe variables de texto para legibilidad sobre fondo blanco */
+body:not(.dark) {
+  --text-light: #1e3a5f;
+}
+
 /* Modo oscuro activado por clase en <body> */
 body.dark {
   --card: #1e293b;
